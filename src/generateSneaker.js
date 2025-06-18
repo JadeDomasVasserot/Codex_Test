@@ -1,5 +1,5 @@
 const mysql = require('mysql2/promise');
-const { Configuration, OpenAIApi } = require('openai');
+const OpenAI = require('openai');
 require('dotenv').config();
 
 async function fetchUserPreferences(userId, connection) {
@@ -36,16 +36,22 @@ async function generateSneaker({ userId, prompt = 'Create a sneaker design' }) {
   const preferences = await fetchUserPreferences(userId, connection);
   const finalPrompt = buildPrompt(preferences, prompt);
 
-  const configuration = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
-  const openai = new OpenAIApi(configuration);
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-  const completion = await openai.createChatCompletion({
+  const completion = await openai.chat.completions.create({
+    model: 'gpt-3.5-turbo',
     model: 'gpt-3.5-turbo',
     messages: [{ role: 'user', content: finalPrompt }]
+    messages: [{ role: 'user', content: finalPrompt }]
+  });
   });
 
+
+  await connection.end();
   await connection.end();
   return completion.data.choices[0].message.content.trim();
+  return completion.choices[0].message.content.trim();
+}
 }
 
 module.exports = { generateSneaker };
