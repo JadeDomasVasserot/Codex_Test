@@ -42,16 +42,11 @@ async function generateSneaker({ userId, prompt = 'Create a sneaker design' }) {
     model: 'gpt-3.5-turbo',
     model: 'gpt-3.5-turbo',
     messages: [{ role: 'user', content: finalPrompt }]
-    messages: [{ role: 'user', content: finalPrompt }]
-  });
   });
 
 
-  await connection.end();
   await connection.end();
   return completion.data.choices[0].message.content.trim();
-  return completion.choices[0].message.content.trim();
-}
 }
 
 module.exports = { generateSneaker };
